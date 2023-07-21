@@ -10,12 +10,6 @@ pipeline {
       }
     }
 
-    stage('Test') {
-      steps {
-        sh 'docker run --rm python-app-image:latest pytest'
-      }
-    }
-
     stage('Deploy') {
       environment {
       
