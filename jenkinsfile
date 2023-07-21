@@ -1,0 +1,41 @@
+pipeline {
+  agent any
+
+  stages {
+    stage('Build') {
+      steps {
+        #Clone your Git repository
+        git 'https://github.com/ramyacloud001/Face-Detection-OpenCV.git'
+
+        #Build Docker image
+        sh 'docker build -t python-app-image:latest .'
+      }
+    }
+
+    stage('Test') {
+      steps {
+        #Run your Python application tests
+        #Example: Using pytest
+        sh 'docker run --rm python-app-image:latest pytest'
+      }
+    }
+
+    stage('Deploy') {
+      environment {
+        #Set your Kubernetes namespace
+        KUBE_NAMESPACE = 'python-namespace'
+      }
+      steps {
+        #Deploy the Docker image to Kubernetes
+        kubernetesDeploy(
+          kubeconfigId: 'arn:aws:eks:us-west-2:020582469906:cluster/demo-eks-cluster',
+          configs: '/home/ubuntu/.kube/config',
+          kubeNamespace: "${KUBE_NAMESPACE}",
+          yamlMergeStrategy: 'merge',
+          enableConfigSubstitution: true,
+          maxRetries: 5
+        )
+      }
+    }
+  }
+}
