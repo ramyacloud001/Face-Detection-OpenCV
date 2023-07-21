@@ -4,8 +4,8 @@ pipeline {
   stages {
     stage('Build') {
       steps {
-        #Clone your Git repository
-        git 'https://github.com/ramyacloud001/Face-Detection-OpenCV.git'
+        # Clone your Git repository
+        git clone https://github.com/ramyacloud001/Face-Detection-OpenCV.git
 
         #Build Docker image
         sh 'docker build -t python-app-image:latest .'
